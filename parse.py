@@ -7,20 +7,6 @@ import re
 Regex = re.compile("[/\\\:\*\?\"\<\>\|]")
 
 
-def clean1(tag,root_url):
-    post_fix = tag.a.get("href")
-    raw_title = tag.img.get("alt")
-    title = Regex.sub("_", raw_title)
-    url = urljoin(root_url, post_fix)
-    return url, title
-
-
-def clean2(tag,root_url):
-    url = tag.img.get("data-loadsrc") or tag.img.get("src")
-    url = urljoin(root_url, url)
-    return url
-
-
 class Parse():
     @classmethod
     def init_spider(cls,s):
@@ -34,25 +20,38 @@ class Parse():
         """
         soup = BeautifulSoup(html,'html.parser')
         temp = soup.select(".cy2-coslist li .showImg")
-        kv_info = [clean1(item,cls.root_url) for item in temp]
+        kv_info = [cls.clean1(item) for item in temp]
         return kv_info[3:]
 
     @classmethod
     def D_parse_Set(cls, html):
         soup = BeautifulSoup(html, 'html.parser')
         temp = soup.select(".cy_cosList li div")
-        kv_info = [clean1(item, cls.root_url) for item in temp]
+        kv_info = [cls.clean1(item) for item in temp]
         return kv_info
 
     @classmethod
     def parse_Img(cls,html):
         soup = BeautifulSoup(html,'html.parser')
         temp = soup.select(".tc p")
-        info = [clean2(item,cls.root_url) for item in temp]
+        info = [cls.clean2(item) for item in temp if cls.clean2(item) ]
         return info
 
+    @classmethod
+    def clean1(cls,tag):
+        post_fix = tag.a.get("href")
+        raw_title = tag.img.get("alt")
+        title = Regex.sub("_", raw_title)
+        url = urljoin(cls.root_url, post_fix)
+        return url, title
 
-
+    @classmethod
+    def clean2(cls,tag):
+        if tag.img:
+            url = tag.img.get("data-loadsrc") or tag.img.get("src")
+            url = urljoin(cls.root_url, url)
+            return url
+        return False
 
 
 
