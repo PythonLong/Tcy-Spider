@@ -34,10 +34,11 @@ class Spider():
 
     def get_imgSet_list(self,url):
         response = self.requests(url)
-        Set_List = Parse.parse_Set(response.text)
+        if self.Config.type != "cos":
+            Set_List = Parse.D_parse_Set(response.text)
+        else:
+            Set_List = Parse.C_parse_Set(response.text)
         return Set_List
-
-
 
     def get_imgSet(self,Set_list):
         for Set_url,title in Set_list:
