@@ -40,7 +40,7 @@ class Parse():
     @classmethod
     def D_parse_Set(cls, html):
         soup = BeautifulSoup(html, 'html.parser')
-        temp = soup.select(".cy-cosList li div")
+        temp = soup.select(".cy_cosList li div")
         kv_info = [clean1(item, cls.root_url) for item in temp]
         return kv_info
 
